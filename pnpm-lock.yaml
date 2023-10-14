@@ -1,7 +1,6 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@playwright/test': ^1.39.0
   '@types/chance': ^1.1.4
   chai: ^4.3.10
   chai-bytes: ^0.1.2
@@ -18,7 +17,6 @@ specifiers:
   webpack-dev-server: ^4.15.1
 
 devDependencies:
-  '@playwright/test': 1.39.0
   '@types/chance': 1.1.4
   chai: 4.3.10
   chai-bytes: 0.1.2_chai@4.3.10
@@ -121,14 +119,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@playwright/test/1.39.0:
-    resolution: {integrity: sha512-3u1iFqgzl7zr004bGPYiN/5EZpRUSFddQBra8Rqll5N0/vfpqlP9I9EXqAoGacuAbX6c9Ulg/Cjqglp5VkK6UQ==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dependencies:
-      playwright: 1.39.0
-    dev: true
 
   /@types/body-parser/1.19.3:
     resolution: {integrity: sha512-oyl4jvAfTGX9Bt6Or4H9ni1Z447/tQuxnZsytsCaExKlmJiU8sFgnIBRzJUpKwB5eWn9HuBYlUlVA74q/yN0eQ==}
