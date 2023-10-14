@@ -2,5 +2,6 @@
 /rust-core
 /src
 /test
-/test-runner.mjs
+/scripts
+/.github
 !/dist

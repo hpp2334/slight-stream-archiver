@@ -7,10 +7,10 @@
   "scripts": {
     "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack --target web && rimraf ../src/pkg/.gitignore",
     "build:lib": "cd ./src && tsc",
-    "build": "pnpm run build:wasm && pnpm run build:lib && cpy ./src/pkg/** ./dist/pkg",
+    "build": "node ./scripts/build.mjs",
     "test:build": "cd ./test && webpack .",
     "test:debug": "pnpm run test:build && cd ./test && webpack serve",
-    "test": "pnpm run test:build && node ./test-runner.mjs"
+    "test": "pnpm run test:build && node ./scripts/test-runner.mjs"
   },
   "keywords": [
     "zip",
@@ -19,7 +19,6 @@
   "author": "hpp2334",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.39.0",
     "@types/chance": "^1.1.4",
     "chai": "^4.3.10",
     "chai-bytes": "^0.1.2",
