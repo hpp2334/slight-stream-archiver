@@ -1,0 +1,6 @@
+/node_modules
+/rust-core
+/src
+/test
+/test-runner.mjs
+!/dist

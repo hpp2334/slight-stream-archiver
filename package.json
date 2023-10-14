@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack --target web",
+    "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack --target web && rimraf ../src/pkg/.gitignore",
     "build:lib": "cd ./src && tsc",
     "build": "pnpm run build:wasm && pnpm run build:lib && cpy ./src/pkg/** ./dist/pkg",
     "test:build": "cd ./test && webpack .",
@@ -28,6 +28,7 @@
     "html-webpack-plugin": "^5.5.3",
     "jszip": "^3.10.1",
     "playwright": "^1.39.0",
+    "rimraf": "^5.0.5",
     "serve-handler": "^6.1.5",
     "typescript": "^5.2.2",
     "webpack": "^5.88.2",
