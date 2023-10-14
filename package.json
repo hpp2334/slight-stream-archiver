@@ -1,0 +1,37 @@
+{
+  "name": "slight-stream-archiver",
+  "version": "0.1.0",
+  "description": "A javascript library that can stream zip files requires a WASM environment",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack",
+    "build:lib": "tsc",
+    "build": "pnpm run build:wasm && pnpm run build:lib && cpy ./src/pkg/** ./dist/pkg",
+    "test:build": "cd ./test && webpack .",
+    "test:manual": "pnpm run test:build && cd ./test && serve ./dist",
+    "test:auto": "pnpm run test:build && node ./test-runner.mjs"
+  },
+  "keywords": [
+    "zip",
+    "wasm"
+  ],
+  "author": "hpp2334",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.39.0",
+    "@types/chance": "^1.1.4",
+    "chai": "^4.3.10",
+    "chai-bytes": "^0.1.2",
+    "chance": "^1.1.11",
+    "cpy-cli": "^5.0.0",
+    "html-webpack-plugin": "^5.5.3",
+    "jszip": "^3.10.1",
+    "playwright": "^1.39.0",
+    "serve": "^14.2.1",
+    "serve-handler": "^6.1.5",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
