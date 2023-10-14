@@ -4,7 +4,7 @@ Slight Stream Archiver
 Introduction
 ----
 
-A javascript library that can stream zip files requires a WASM environment. It wrap [zip-rs](https://github.com/zip-rs/zip) to implement streaming archive.
+A javascript library that can stream zip files requires a WASM environment. It wraps zip-rs to implement streaming archives.
 
 Currently, zip is supported only.
 
