@@ -5,12 +5,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack",
-    "build:lib": "tsc",
+    "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack --target web",
+    "build:lib": "cd ./src && tsc",
     "build": "pnpm run build:wasm && pnpm run build:lib && cpy ./src/pkg/** ./dist/pkg",
     "test:build": "cd ./test && webpack .",
-    "test:manual": "pnpm run test:build && cd ./test && serve ./dist",
-    "test:auto": "pnpm run test:build && node ./test-runner.mjs"
+    "test:debug": "pnpm run test:build && cd ./test && webpack serve",
+    "test": "pnpm run test:build && node ./test-runner.mjs"
   },
   "keywords": [
     "zip",
@@ -28,10 +28,10 @@
     "html-webpack-plugin": "^5.5.3",
     "jszip": "^3.10.1",
     "playwright": "^1.39.0",
-    "serve": "^14.2.1",
     "serve-handler": "^6.1.5",
     "typescript": "^5.2.2",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   }
 }

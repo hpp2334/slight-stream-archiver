@@ -1,6 +1,7 @@
-import "./pkg/rust_core"
-import { InternalStreamZip } from "./pkg/rust_core"
+import ensureWasmLoaded, { InternalStreamZip } from "./pkg/rust_core"
 import { IDataGenerator } from "./type";
+
+export { ensureWasmLoaded };
 
 type NextChunkHandler = (blob_id: number) => Uint8Array | null
 
@@ -71,7 +72,7 @@ export class StreamZip {
         this.ensureNotFinish("Cannot add file to a finished stream zip.");
         this._internalZip.add_file(path, this._dataGeneratorManager.add(dataGenerator))
     }
-    
+
     public addFolder = (path: string) => {
         this.ensureNotFinish("Cannot add folder to a finished stream zip.");
         this._internalZip.add_folder(path)

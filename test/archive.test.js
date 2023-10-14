@@ -3,11 +3,13 @@ import chaiBytes from 'chai-bytes'
 const { expect } = chai.use(chaiBytes)
 
 import { describe } from './test-suites'
-import { StreamZip, createBytesDataGenerator, createStringDataGenerator } from '../dist'
+import { ensureWasmLoaded, StreamZip, createBytesDataGenerator, createStringDataGenerator } from '../dist'
 import JsZip from 'jszip'
 import Chance from 'chance'
 
 describe('Zip a.txt "Hello World"', async () => {
+    await ensureWasmLoaded();
+
     const zip = new StreamZip()
     zip.addFile('a.txt', createStringDataGenerator('Hello World'))
     const buf = zip.finish()
@@ -20,6 +22,8 @@ describe('Zip a.txt "Hello World"', async () => {
 })
 
 describe('Zip b.bin b"01234"', async () => {
+    await ensureWasmLoaded();
+
     const zip = new StreamZip()
     zip.addFile('b.bin', createBytesDataGenerator(new Uint8Array([0, 1, 2, 3, 4])))
     const buf = zip.finish()
@@ -35,6 +39,8 @@ describe('Zip b.bin b"01234"', async () => {
 })
 
 describe('Zip a.txt "Hello World", b.bin b"01234"', async () => {
+    await ensureWasmLoaded();
+
     const zip = new StreamZip()
     zip.addFile('a.txt', createStringDataGenerator('Hello World'))
     zip.addFile('b.bin', createBytesDataGenerator(new Uint8Array([0, 1, 2, 3, 4])))
@@ -58,6 +64,8 @@ describe('Zip a.txt "Hello World", b.bin b"01234"', async () => {
 
 
 describe('Zip a.txt "Hello World", f1/b.bin b"01234"', async () => {
+    await ensureWasmLoaded();
+
     const zip = new StreamZip()
     zip.addFile('a.txt', createStringDataGenerator('Hello World'))
     zip.addFolder('f1')
@@ -105,6 +113,8 @@ for (let caseNum = 0; caseNum < 5000; caseNum++) {
     [0, 1, 2, 3].forEach(() => work('', gen.bool()))
 
     describe(`Archiver FuzzTest [${seed}] ${caseNum + 1}`, async () => {
+        await ensureWasmLoaded();
+
         const zip = new StreamZip()
         for (const [path, data, isDir] of ops) {
             if (isDir) {

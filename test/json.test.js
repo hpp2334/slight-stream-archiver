@@ -3,11 +3,13 @@ import chaiBytes from 'chai-bytes'
 const { expect } = chai.use(chaiBytes)
 
 import { describe } from './test-suites'
-import { StreamZip, createBytesDataGenerator, createJsonStringifyDataGenerator, createStringDataGenerator } from '../dist'
+import { ensureWasmLoaded, StreamZip, createJsonStringifyDataGenerator, createStringDataGenerator } from '../dist'
 import JsZip from 'jszip'
 import Chance from 'chance'
 
 async function testSimpleJson(obj, expected) {
+    await ensureWasmLoaded()
+
     const zip = new StreamZip()
     zip.addFile('a.txt', createJsonStringifyDataGenerator(obj))
     const buf = zip.finish()
