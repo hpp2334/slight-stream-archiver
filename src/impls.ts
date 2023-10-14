@@ -53,19 +53,27 @@ class DataGeneratorManager {
     }
 }
 
+export interface StreamZipOptions {
+    compressionMethod?: 'STORE' | 'DEFLATE',
+    compressionLevel?: number
+}
+
 export class StreamZip {
     private _id: number;
     private _internalZip: InternalStreamZip;
     private _dataGeneratorManager = new DataGeneratorManager()
     private _isFinished = false;
 
-    constructor() {
+    constructor(options?: StreamZipOptions) {
+        const compressionMethod = options?.compressionMethod === 'DEFLATE' ? 1 : 0
+        const compressionLevel = options?.compressionLevel ?? undefined
+
         this._id = globalManager.initializeStreamZip({
             next_chunk: (blob_id) => {
                 return this._dataGeneratorManager.nextChunk(blob_id)
             }
         })
-        this._internalZip = new InternalStreamZip(this._id)
+        this._internalZip = new InternalStreamZip(this._id, compressionMethod, compressionLevel)
     }
 
     public addFile = (path: string, dataGenerator: IDataGenerator) => {

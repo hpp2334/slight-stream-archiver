@@ -21,6 +21,23 @@ describe('Zip a.txt "Hello World"', async () => {
     expect(data).to.equal('Hello World');
 })
 
+describe('Zip DEFLATE level=7', async () => {
+    await ensureWasmLoaded();
+
+    const zip = new StreamZip({
+        compressionMethod: 'DEFLATE',
+        compressionLevel: 7,
+    })
+    zip.addFile('a.txt', createStringDataGenerator('Hello World'))
+    const buf = zip.finish()
+
+    const unwrapZip = await JsZip.loadAsync(buf)
+    const aTxt = unwrapZip.file('a.txt')
+    expect(aTxt).to.not.be.null;
+    const data = await aTxt.async('string');
+    expect(data).to.equal('Hello World');
+})
+
 describe('Zip b.bin b"01234"', async () => {
     await ensureWasmLoaded();
 

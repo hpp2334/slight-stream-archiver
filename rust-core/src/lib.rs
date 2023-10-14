@@ -28,14 +28,20 @@ pub struct InternalStreamZip {
 #[wasm_bindgen]
 impl InternalStreamZip {
     #[wasm_bindgen(constructor)]
-    pub fn new(id: i32) -> Self {
+    pub fn new(id: i32, compression_method: i32, compression_level: Option<i32>) -> Self {
         set_panic_hook();
+
+        let compression_method = match compression_method {
+            0 => zip::CompressionMethod::STORE,
+            1 => zip::CompressionMethod::DEFLATE,
+            _ => panic!("not support method"),
+        };
         Self {
             zip_id: id,
             ops: Default::default(),
             options: zip::write::FileOptions::default()
-                .compression_method(zip::CompressionMethod::Deflated)
-                .compression_level(Some(9)),
+                .compression_method(compression_method)
+                .compression_level(compression_level),
         }
     }
 
