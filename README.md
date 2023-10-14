@@ -1,5 +1,4 @@
 Slight Stream Archiver
-
 ======
 
 Introduction
