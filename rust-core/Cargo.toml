@@ -1,5 +1,5 @@
 [package]
-name = "rust-core"
+name = "wasm-slight-stream-zip"
 version = "0.1.0"
 authors = ["hpp2334 <hpp2334@outlook.com>"]
 edition = "2018"

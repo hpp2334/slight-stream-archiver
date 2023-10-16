@@ -1,4 +1,4 @@
-import ensureWasmLoaded, { InternalStreamZip } from "./pkg/rust_core"
+import ensureWasmLoaded, { InternalStreamZip } from "./pkg/wasm_slight_stream_zip"
 import { IDataGenerator } from "./type";
 
 export { ensureWasmLoaded };
