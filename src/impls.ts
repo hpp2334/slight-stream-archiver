@@ -86,6 +86,10 @@ export class StreamZip {
         this._internalZip.add_folder(path)
     }
 
+    public flush = () => {
+        this._internalZip.flush();
+    }
+
     public finish = (): Uint8Array => {
         this.ensureNotFinish("The stream zip is already finished.");
         this._isFinished = true;

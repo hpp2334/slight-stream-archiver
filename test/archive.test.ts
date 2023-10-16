@@ -75,6 +75,31 @@ it('Zip a.txt "Hello World", b.bin b"01234"', async () => {
 })
 
 
+it('Zip a.txt "Hello World", b.bin b"01234", with flush', async () => {
+    await ensureWasmLoaded();
+
+    const zip = new StreamZip()
+    zip.addFile('a.txt', createStringDataGenerator('Hello World'))
+    zip.flush()
+    zip.addFile('b.bin', createBytesDataGenerator(new Uint8Array([0, 1, 2, 3, 4])))
+    const buf = zip.finish()
+
+    const unwrapZip = await JsZip.loadAsync(buf)
+    {
+        const aTxt = unwrapZip.file('a.txt')
+        expect(aTxt).to.not.be.null;
+        const data = await aTxt!.async('string');
+        expect(data).to.equal('Hello World');
+    }
+    {
+        const bBin = unwrapZip.file('b.bin')
+        expect(bBin).to.not.be.null;
+        const data = await bBin!.async('uint8array')
+        expect(data).have.length(5)
+        expect(data).to.equalBytes([0, 1, 2, 3, 4])
+    }
+})
+
 it('Zip a.txt "Hello World", f1/b.bin b"01234"', async () => {
     await ensureWasmLoaded();
 
@@ -133,6 +158,10 @@ for (let caseNum = 0; caseNum < 5000; caseNum++) {
                 zip.addFolder(path)
             } else {
                 zip.addFile(path, createStringDataGenerator(data))
+            }
+
+            if (gen.integer({ min: 0, max: 100 }) <= 20) {
+                zip.flush()
             }
         }
         const buf = zip.finish()

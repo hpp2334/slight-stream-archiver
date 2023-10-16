@@ -23,6 +23,7 @@ pub struct InternalStreamZip {
     zip_id: i32,
     ops: Vec<Entry>,
     options: zip::write::FileOptions,
+    zip: zip::ZipWriter<std::io::Cursor<Vec<u8>>>,
 }
 
 #[wasm_bindgen]
@@ -36,12 +37,14 @@ impl InternalStreamZip {
             1 => zip::CompressionMethod::DEFLATE,
             _ => panic!("not support method"),
         };
+        let zip = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
         Self {
             zip_id: id,
             ops: Default::default(),
             options: zip::write::FileOptions::default()
                 .compression_method(compression_method)
                 .compression_level(compression_level),
+            zip,
         }
     }
 
@@ -58,23 +61,26 @@ impl InternalStreamZip {
         })
     }
 
-    pub fn finish(self) -> Box<[u8]> {
-        let mut zip = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
-
-        for entry in self.ops {
+    pub fn flush(&mut self) {
+        for entry in self.ops.iter() {
             match entry {
                 Entry::Folder { path } => {
-                    zip.add_directory(path, self.options).unwrap();
+                    self.zip.add_directory(path, self.options).unwrap();
                 }
                 Entry::File { path, id } => {
-                    zip.start_file(path, self.options).unwrap();
-                    while let Some(chunk) = next_chunk(self.zip_id, id) {
-                        zip.write_all(&chunk).unwrap();
+                    self.zip.start_file(path, self.options).unwrap();
+                    while let Some(chunk) = next_chunk(self.zip_id, *id) {
+                        self.zip.write_all(&chunk).unwrap();
                     }
                 }
             }
         }
-        let res = zip.finish().unwrap();
+        self.ops.clear();
+    }
+
+    pub fn finish(&mut self) -> Box<[u8]> {
+        self.flush();
+        let res = self.zip.finish().unwrap();
         res.into_inner().into_boxed_slice()
     }
 }
