@@ -8,9 +8,8 @@
     "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack --target web && rimraf ../src/pkg/.gitignore",
     "build:lib": "cd ./src && tsc",
     "build": "node ./scripts/build.mjs",
-    "test:build": "cd ./test && webpack .",
-    "test:debug": "pnpm run test:build && cd ./test && webpack serve",
-    "test": "pnpm run test:build && node ./scripts/test-runner.mjs"
+    "test:build": "cd ./test-dependencies && tsc && webpack",
+    "test": "pnpm run test:build && web-test-runner"
   },
   "keywords": [
     "zip",
@@ -23,7 +22,13 @@
     "url": "https://github.com/hpp2334/slight-stream-zip"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.8",
     "@types/chance": "^1.1.4",
+    "@types/mocha": "^10.0.2",
+    "@web/dev-server": "^0.3.3",
+    "@web/dev-server-esbuild": "^0.4.1",
+    "@web/test-runner": "^0.17.2",
+    "@web/test-runner-playwright": "^0.10.1",
     "chai": "^4.3.10",
     "chai-bytes": "^0.1.2",
     "chance": "^1.1.11",
@@ -33,6 +38,7 @@
     "playwright": "^1.39.0",
     "rimraf": "^5.0.5",
     "serve-handler": "^6.1.5",
+    "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",

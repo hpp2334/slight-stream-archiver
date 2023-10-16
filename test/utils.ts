@@ -1,8 +1,7 @@
+import { Chance } from '../test-dependencies/dist'
+import { StreamZip } from '../dist'
 
-import { ensureWasmLoaded, StreamZip, createJsonStringifyDataGenerator, createStringDataGenerator } from '../dist'
-import Chance from 'chance'
-
-export function randomZip(seed) {
+export function randomZip(seed?: number) {
     if (!seed) {
         return new StreamZip();
     }
@@ -19,13 +18,13 @@ export function randomZip(seed) {
 }
 
 
-export function randomValue(seed, minRange, maxRange, maxDepth, startsWithObject) {
+export function randomValue(seed: number, minRange: number, maxRange: number, maxDepth: number, startsWithObject: boolean) {
     const gen = new Chance(seed)
-    const prevGenArrayOrObject = []
+    const prevGenArrayOrObject: any[] = []
 
-    function randomObject(detph) {
+    function randomObject(detph: number) {
         const n = gen.integer({ min: minRange, max: maxRange })
-        const x = {}
+        const x: any = {}
 
         for (let j = 0; j < n; j++) {
             const usePrev = prevGenArrayOrObject.length && gen.floating({ min: 0, max: 1 }) < 0.2
@@ -39,9 +38,9 @@ export function randomValue(seed, minRange, maxRange, maxDepth, startsWithObject
         return x;
     }
 
-    function randomArray(detph) {
+    function randomArray(detph: number) {
         const n = gen.integer({ min: minRange, max: maxRange })
-        const x = []
+        const x: any[] = []
 
         for (let j = 0; j < n; j++) {
             const usePrev = prevGenArrayOrObject.length && gen.floating({ min: 0, max: 1 }) < 0.2
@@ -55,7 +54,7 @@ export function randomValue(seed, minRange, maxRange, maxDepth, startsWithObject
         return x;
     }
 
-    function randomValueImpl(isRoot, detph) {
+    function randomValueImpl(isRoot: boolean, detph: number) {
         const v = (() => {
             if (isRoot) {
                 if (startsWithObject) {

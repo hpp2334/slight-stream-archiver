@@ -1,14 +1,8 @@
-import chai from 'chai'
-import chaiBytes from 'chai-bytes'
-const { expect } = chai.use(chaiBytes)
-
-import { describe } from './test-suites'
 import { ensureWasmLoaded, StreamZip, createBytesDataGenerator, createStringDataGenerator } from '../dist'
-import JsZip from 'jszip'
-import Chance from 'chance'
 import { randomZip } from './utils'
+import { expect, JsZip, Chance } from '../test-dependencies/dist'
 
-describe('Zip a.txt "Hello World"', async () => {
+it('Zip a.txt "Hello World"', async () => {
     await ensureWasmLoaded();
 
     const zip = new StreamZip()
@@ -18,11 +12,11 @@ describe('Zip a.txt "Hello World"', async () => {
     const unwrapZip = await JsZip.loadAsync(buf)
     const aTxt = unwrapZip.file('a.txt')
     expect(aTxt).to.not.be.null;
-    const data = await aTxt.async('string');
+    const data = await aTxt!.async('string');
     expect(data).to.equal('Hello World');
 })
 
-describe('Zip DEFLATE level=7', async () => {
+it('Zip DEFLATE level=7', async () => {
     await ensureWasmLoaded();
 
     const zip = new StreamZip({
@@ -35,11 +29,11 @@ describe('Zip DEFLATE level=7', async () => {
     const unwrapZip = await JsZip.loadAsync(buf)
     const aTxt = unwrapZip.file('a.txt')
     expect(aTxt).to.not.be.null;
-    const data = await aTxt.async('string');
+    const data = await aTxt!.async('string');
     expect(data).to.equal('Hello World');
 })
 
-describe('Zip b.bin b"01234"', async () => {
+it('Zip b.bin b"01234"', async () => {
     await ensureWasmLoaded();
 
     const zip = new StreamZip()
@@ -50,13 +44,13 @@ describe('Zip b.bin b"01234"', async () => {
     {
         const bBin = unwrapZip.file('b.bin')
         expect(bBin).to.not.be.null;
-        const data = await bBin.async('uint8array')
+        const data = await bBin!.async('uint8array')
         expect(data).have.length(5)
         expect(data).to.equalBytes([0, 1, 2, 3, 4])
     }
 })
 
-describe('Zip a.txt "Hello World", b.bin b"01234"', async () => {
+it('Zip a.txt "Hello World", b.bin b"01234"', async () => {
     await ensureWasmLoaded();
 
     const zip = new StreamZip()
@@ -68,20 +62,20 @@ describe('Zip a.txt "Hello World", b.bin b"01234"', async () => {
     {
         const aTxt = unwrapZip.file('a.txt')
         expect(aTxt).to.not.be.null;
-        const data = await aTxt.async('string');
+        const data = await aTxt!.async('string');
         expect(data).to.equal('Hello World');
     }
     {
         const bBin = unwrapZip.file('b.bin')
         expect(bBin).to.not.be.null;
-        const data = await bBin.async('uint8array')
+        const data = await bBin!.async('uint8array')
         expect(data).have.length(5)
         expect(data).to.equalBytes([0, 1, 2, 3, 4])
     }
 })
 
 
-describe('Zip a.txt "Hello World", f1/b.bin b"01234"', async () => {
+it('Zip a.txt "Hello World", f1/b.bin b"01234"', async () => {
     await ensureWasmLoaded();
 
     const zip = new StreamZip()
@@ -94,15 +88,15 @@ describe('Zip a.txt "Hello World", f1/b.bin b"01234"', async () => {
     {
         const aTxt = unwrapZip.file('a.txt')
         expect(aTxt).to.not.be.null;
-        const data = await aTxt.async('string');
+        const data = await aTxt!.async('string');
         expect(data).to.equal('Hello World');
     }
     {
         const entry = unwrapZip.folder('f1')
         expect(entry).to.not.be.null
-        const bBin = entry.file('b.bin')
+        const bBin = entry!.file('b.bin')
         expect(bBin).to.not.be.null;
-        const data = await bBin.async('uint8array')
+        const data = await bBin!.async('uint8array')
         expect(data).have.length(5)
         expect(data).to.equalBytes([0, 1, 2, 3, 4])
     }
@@ -112,9 +106,9 @@ for (let caseNum = 0; caseNum < 5000; caseNum++) {
     const seed = Date.now() + caseNum
     const gen = new Chance(seed)
 
-    const ops = []
+    const ops: Array<[string, string, boolean]> = []
     let fileId = 0
-    const work = (root, isDir) => {
+    const work = (root: string, isDir: boolean) => {
         const fileName = "file_" + (++fileId)
         const path = root + '/' + fileName
         const data = gen.string()
@@ -130,7 +124,7 @@ for (let caseNum = 0; caseNum < 5000; caseNum++) {
     }
     [0, 1, 2, 3].forEach(() => work('', gen.bool()))
 
-    describe(`Archiver FuzzTest [${seed}] ${caseNum + 1}`, async () => {
+    it(`Archiver FuzzTest [${seed}] ${caseNum + 1}`, async () => {
         await ensureWasmLoaded();
 
         const zip = randomZip(seed)
@@ -151,7 +145,7 @@ for (let caseNum = 0; caseNum < 5000; caseNum++) {
             } else {
                 const entry = unwrapZip.file(path);
                 expect(entry).not.be.null;
-                const data = await entry.async('string');
+                const data = await entry!.async('string');
                 expect(data).to.eq(rawData);
             }
         }
