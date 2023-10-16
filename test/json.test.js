@@ -6,12 +6,15 @@ import { describe } from './test-suites'
 import { ensureWasmLoaded, StreamZip, createJsonStringifyDataGenerator, createStringDataGenerator } from '../dist'
 import JsZip from 'jszip'
 import Chance from 'chance'
+import { randomZip, randomValue } from './utils'
 
-async function testSimpleJson(obj, expected) {
+async function testSimpleJson(obj, expected, seed) {
     await ensureWasmLoaded()
 
-    const zip = new StreamZip()
-    zip.addFile('a.txt', createJsonStringifyDataGenerator(obj))
+    const zip = randomZip(seed)
+    zip.addFile('a.txt', createJsonStringifyDataGenerator(obj, {
+        threshold: 20 * 1000 * 1000
+    }))
     const buf = zip.finish()
 
     const unwrapZip = await JsZip.loadAsync(buf)
@@ -21,66 +24,6 @@ async function testSimpleJson(obj, expected) {
     expect(data).to.equal(expected);
 }
 
-function randomValue(seed) {
-    const gen = new Chance(seed)
-    const prevGenArrayOrObject = []
-
-    function randomObject() {
-        const n = gen.integer({ min: 0, max: 5 })
-        const x = {}
-
-        for (let j = 0; j < n; j++) {
-            const usePrev = prevGenArrayOrObject.length && gen.floating({ min: 0, max: 1 }) < 0.2
-            if (usePrev) {
-                x[gen.string()] = prevGenArrayOrObject[gen.integer({ min: 0, max: prevGenArrayOrObject.length - 1 })]
-            } else {
-                x[gen.string()] = randomValueImpl()
-            }
-        }
-        prevGenArrayOrObject.push(x)
-        return x;
-    }
-
-    function randomArray() {
-        const n = gen.integer({ min: 0, max: 5 })
-        const x = []
-
-        for (let j = 0; j < n; j++) {
-            const usePrev = prevGenArrayOrObject.length && gen.floating({ min: 0, max: 1 }) < 0.2
-            if (usePrev) {
-                x.push(prevGenArrayOrObject[gen.integer({ min: 0, max: prevGenArrayOrObject.length - 1 })])
-            } else {
-                x.push(randomValueImpl())
-            }
-        }
-        prevGenArrayOrObject.push(x)
-        return x;
-    }
-
-    function randomValueImpl(isRoot) {
-        const v = gen.integer({ min: isRoot ? 1 : 0, max: 7 })
-        switch (v) {
-            case 0:
-                return undefined
-            case 1:
-                return null
-            case 2:
-                return gen.floating()
-            case 3:
-                return gen.string()
-            case 4:
-                return gen.bool()
-            case 5:
-                return gen.integer()
-            case 6:
-                return randomArray()
-            case 7:
-                return randomObject()
-        }
-    }
-
-    return randomValueImpl(true)
-}
 
 describe('json({})', async () => {
     await testSimpleJson({}, '{}')
@@ -141,10 +84,21 @@ describe('json(loop), expct throw', async () => {
     expect(catchError).to.be.true;
 })
 
+
+for (let caseNum = 0; caseNum < 10; caseNum++) {
+    const seed = Date.now() + caseNum
+    describe(`Json Archive Perf FuzzTest [${seed}] ${caseNum + 1}`, async () => {
+        const o = randomValue(seed, 5, 21, 4, true)
+        const s = JSON.stringify(o)
+        await testSimpleJson(o, s, seed)
+    })
+}
+
+
 for (let caseNum = 0; caseNum < 5000; caseNum++) {
     const seed = Date.now() + caseNum
     describe(`Json Archive FuzzTest [${seed}] ${caseNum + 1}`, async () => {
-        const o = randomValue(seed)
+        const o = randomValue(seed, 0, 4, 100, false)
         await testSimpleJson(o, JSON.stringify(o))
     })
 }

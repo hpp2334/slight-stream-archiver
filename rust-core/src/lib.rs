@@ -69,7 +69,7 @@ impl InternalStreamZip {
                 Entry::File { path, id } => {
                     zip.start_file(path, self.options).unwrap();
                     while let Some(chunk) = next_chunk(self.zip_id, id) {
-                        zip.write(&chunk).unwrap();
+                        zip.write_all(&chunk).unwrap();
                     }
                 }
             }

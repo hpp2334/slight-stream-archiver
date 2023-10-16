@@ -6,6 +6,7 @@ import { describe } from './test-suites'
 import { ensureWasmLoaded, StreamZip, createBytesDataGenerator, createStringDataGenerator } from '../dist'
 import JsZip from 'jszip'
 import Chance from 'chance'
+import { randomZip } from './utils'
 
 describe('Zip a.txt "Hello World"', async () => {
     await ensureWasmLoaded();
@@ -132,7 +133,7 @@ for (let caseNum = 0; caseNum < 5000; caseNum++) {
     describe(`Archiver FuzzTest [${seed}] ${caseNum + 1}`, async () => {
         await ensureWasmLoaded();
 
-        const zip = new StreamZip()
+        const zip = randomZip(seed)
         for (const [path, data, isDir] of ops) {
             if (isDir) {
                 zip.addFolder(path)

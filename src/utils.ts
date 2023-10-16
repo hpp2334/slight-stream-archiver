@@ -26,8 +26,8 @@ export const createBytesDataGenerator = (bytes: Uint8Array): IDataGenerator => {
     }
 }
 
-export const createJsonStringifyDataGenerator = (obj: any): IDataGenerator => {
-    return new JsonStringifyDataGenerator(obj)
+export const createJsonStringifyDataGenerator = (obj: any, options?: JsonStringifyDataGeneratorOptions): IDataGenerator => {
+    return new JsonStringifyDataGenerator(obj, options)
 }
 
 function isNotNullObject(x: any) {
@@ -42,54 +42,82 @@ interface JsonStringifyStackItem {
     index: number
 }
 
+export interface JsonStringifyDataGeneratorOptions {
+    threshold: number;
+}
+
 class JsonStringifyDataGenerator implements IDataGenerator {
     private _stack: Array<JsonStringifyStackItem> = []
     private _objectStackSet = new WeakSet()
-    private textEncoder = new TextEncoder()
+    private buf: string = ''
+    private threshold: number;
 
-    public constructor(obj: any) {
+    public constructor(obj: any, options?: JsonStringifyDataGeneratorOptions) {
         if (obj === undefined) {
             throw Error("cannot stringify undefined")
+        }
+        // 1 MB
+        this.threshold = options?.threshold ?? (1 << 20);
+        if (this.threshold <= 0) {
+            throw Error(`threshold should not less or equal to zero`)
         }
         this.pushStackObject(obj)
     }
 
     public next = (): Uint8Array | null => {
-        if (this._stack.length === 0) {
-            return null;
-        }
-        const curr = this._stack[this._stack.length - 1]
-        if (!curr.notNullObject) {
-            this.popStack()
-            return this.textEncoder.encode(JSON.stringify(curr.obj ?? null))
-        }
-        if (curr.keys.length === 0) {
-            this.popStack()
-            return this.textEncoder.encode(curr.isArray ? "[]" : "{}");
-        }
-        const index = curr.index++
-        if (index >= curr.keys.length) {
-            this.popStack()
-            return this.textEncoder.encode(curr.isArray ? ']' : '}')
-        }
-        const key = curr.keys[index]
-        const nextObject = curr.obj[key]
-        this.pushStackObject(nextObject)
+        while (true) {
+            if (this.buf.length >= this.threshold) {
+                break;
+            }
+            if (this._stack.length === 0) {
+                break;
+            }
+            const curr = this._stack[this._stack.length - 1]
+            if (!curr.notNullObject) {
+                this.popStack()
+                this.buf += JSON.stringify(curr.obj ?? null)
+                continue;
+            }
+            if (curr.keys.length === 0) {
+                this.popStack()
+                this.buf += (curr.isArray ? "[]" : "{}");
+                continue;
+            }
+            const index = curr.index++
+            if (index >= curr.keys.length) {
+                this.popStack()
+                this.buf += (curr.isArray ? ']' : '}')
+                continue;
+            }
+            const key = curr.keys[index]
+            const nextObject = curr.obj[key]
+            this.pushStackObject(nextObject)
 
-        if (!curr.isArray) {
-            const jsonKey = JSON.stringify(key)
-            if (index == 0) {
-                return this.textEncoder.encode(`{${jsonKey}:`);
+            if (!curr.isArray) {
+                const jsonKey = JSON.stringify(key)
+                if (index == 0) {
+                    this.buf += `{${jsonKey}:`
+                    continue;
+                } else {
+                    this.buf += `,${jsonKey}:`
+                    continue;
+                }
             } else {
-                return this.textEncoder.encode(`,${jsonKey}:`);
-            }
-        } else {
-            if (index == 0) {
-                return this.textEncoder.encode('[');
-            } else {
-                return this.textEncoder.encode(',');
+                if (index == 0) {
+                    this.buf += '['
+                    continue;
+                } else {
+                    this.buf += ','
+                    continue;
+                }
             }
         }
+        if (this.buf.length > 0) {
+            const data = new TextEncoder().encode(this.buf);
+            this.buf = ''
+            return data;
+        }
+        return null;
     }
 
     private pushStackObject = (obj: any) => {
