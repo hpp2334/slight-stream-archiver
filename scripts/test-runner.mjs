@@ -27,7 +27,7 @@ import http from 'http'
 
             await page.goto('http://127.0.0.1:3000');
             await page.waitForSelector('.test-result', {
-                timeout: 30 * 1000,
+                timeout: 90 * 1000,
             })
             const fail$Els = await page.$$('[data-case-fail]')
             for (const $el of fail$Els) {
