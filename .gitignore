@@ -2,3 +2,4 @@ node_modules
 /dist
 /test/dist
 /src/pkg
+/test-dependencies/dist

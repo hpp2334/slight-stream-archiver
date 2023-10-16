@@ -79,8 +79,8 @@ it('json(loop), expct throw', async () => {
 })
 
 
-for (let caseNum = 0; caseNum < 10; caseNum++) {
-    const seed = Date.now() + caseNum
+for (let caseNum = 0; caseNum < 50; caseNum++) {
+    const seed = 100 + caseNum
     it(`Json Archive Perf FuzzTest [${seed}] ${caseNum + 1}`, async () => {
         const o = randomValue(seed, 5, 19, 4, true)
         const s = JSON.stringify(o)
