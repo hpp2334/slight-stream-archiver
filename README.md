@@ -2,8 +2,8 @@ Slight Stream Archiver
 ======
 
 ![Main](https://github.com/hpp2334/slight-stream-archiver/actions/workflows/main.yml/badge.svg)
-![Statements](https://img.shields.io/badge/statements-79.5%25-red.svg?style=flat)
 [![npm version](https://badge.fury.io/js/slight-stream-archiver.svg)](https://badge.fury.io/js/slight-stream-archiver)
+[![codecov](https://codecov.io/gh/hpp2334/slight-stream-archiver/graph/badge.svg?token=LCQMI0HOS3)](https://codecov.io/gh/hpp2334/slight-stream-archiver)
 
 Introduction
 ----
