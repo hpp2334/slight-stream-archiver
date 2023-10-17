@@ -4,4 +4,7 @@
 /test
 /scripts
 /.github
+/coverage
+/test-dependencies
+/web-test-runner.config.mjs
 !/dist

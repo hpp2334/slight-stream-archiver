@@ -1,10 +1,14 @@
 Slight Stream Archiver
 ======
 
+![Main](https://github.com/hpp2334/slight-stream-archiver/actions/workflows/main.yml/badge.svg)
+![Statements](https://img.shields.io/badge/statements-79.5%25-red.svg?style=flat)
+[![npm version](https://badge.fury.io/js/slight-stream-archiver.svg)](https://badge.fury.io/js/slight-stream-archiver)
+
 Introduction
 ----
 
-A javascript library that can stream zip files requires a WASM environment. It wraps zip-rs to implement streaming archives.
+A javascript library that can stream zip files requires a WASM environment. It wraps [zip-rs](https://github.com/zip-rs/zip) to implement streaming archives.
 
 Currently, zip is supported only.
 

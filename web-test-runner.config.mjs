@@ -13,4 +13,13 @@ export default {
     plugins: [
         esbuildPlugin({ ts: true }),
     ],
+    coverage: true,
+    coverageConfig: {
+        exclude: [
+            'test-dependencies/**/*.*',
+            'test/**/*.*'
+        ],
+        report: true,
+        reporters: ['json-summary'],
+    }
 };

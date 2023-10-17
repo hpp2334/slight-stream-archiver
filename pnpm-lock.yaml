@@ -13,6 +13,8 @@ specifiers:
   chance: ^1.1.11
   cpy-cli: ^5.0.0
   html-webpack-plugin: ^5.5.3
+  husky: ^8.0.3
+  istanbul-badges-readme: ^1.8.5
   jszip: ^3.10.1
   playwright: ^1.39.0
   rimraf: ^5.0.5
@@ -36,6 +38,8 @@ devDependencies:
   chance: 1.1.11
   cpy-cli: 5.0.0
   html-webpack-plugin: 5.5.3_webpack@5.88.2
+  husky: 8.0.3
+  istanbul-badges-readme: 1.8.5
   jszip: 3.10.1
   playwright: 1.39.0
   rimraf: 5.0.5
@@ -2635,6 +2639,12 @@ packages:
     engines: {node: '>=10.17.0'}
     dev: true
 
+  /husky/8.0.3:
+    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -2811,6 +2821,11 @@ packages:
   /isobject/3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /istanbul-badges-readme/1.8.5:
+    resolution: {integrity: sha512-VEh90ofuufPZIbLeDF2g14wpe0sebhirG0xHooYKpNPYOkGXm6y+HJFotQqIzCg0NmbCnlKnOPL1B2oxG7/piA==}
+    hasBin: true
     dev: true
 
   /istanbul-lib-coverage/3.2.0:

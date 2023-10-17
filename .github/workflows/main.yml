@@ -1,4 +1,4 @@
-name: Main
+name: Build And Test
 on: [push]
 env:
   CARGO_TERM_COLOR: always
