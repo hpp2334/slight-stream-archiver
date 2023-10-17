@@ -5,13 +5,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepare": "husky install",
     "build:wasm": "cd ./rust-core && wasm-pack build --release --out-dir ../src/pkg --no-pack --target web && rimraf ../src/pkg/.gitignore",
     "build:lib": "cd ./src && tsc",
     "build": "node ./scripts/build.mjs",
     "test:build": "cd ./test-dependencies && tsc && webpack",
-    "test": "pnpm run test:build && web-test-runner",
-    "make-badges": "istanbul-badges-readme"
+    "test": "pnpm run test:build && web-test-runner"
   },
   "keywords": [
     "zip",
@@ -36,8 +34,6 @@
     "chance": "^1.1.11",
     "cpy-cli": "^5.0.0",
     "html-webpack-plugin": "^5.5.3",
-    "husky": "^8.0.3",
-    "istanbul-badges-readme": "^1.8.5",
     "jszip": "^3.10.1",
     "playwright": "^1.39.0",
     "rimraf": "^5.0.5",
