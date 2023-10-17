@@ -19,7 +19,6 @@ export default {
             'test-dependencies/**/*.*',
             'test/**/*.*'
         ],
-        report: true,
-        reporters: ['json-summary'],
+        reporters: ['lcovonly', 'clover'],
     }
 };
